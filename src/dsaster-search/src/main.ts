@@ -14,7 +14,9 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  SwaggerModule.setup("swagger", app, () => createOpenApiDocument(app));
+  const swaggerPath = "swagger";
+
+  SwaggerModule.setup(swaggerPath, app, () => createOpenApiDocument(app));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -28,7 +30,7 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 
   const url = await app.getUrl();
-  const swaggerUrl = `${url}/swagger`;
+  const swaggerUrl = `${url}/${swaggerPath}`;
 
   logger.log(`Listening on ${hyperlink(url)}`);
   logger.log(`Swagger available on ${hyperlink(swaggerUrl)}`);
