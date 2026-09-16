@@ -1,8 +1,9 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { SwaggerModule } from "@nestjs/swagger";
 
 import { AppModule } from "./app.module.js";
+import { createOpenApiDocument } from "./openapi.js";
 
 function hyperlink(url: string): string {
   return `\x1b]8;;${url}\x07${url}\x1b]8;;\x07`;
@@ -13,13 +14,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle("DSaster-Search")
-    .setVersion("0.0.1")
-    .build();
-  SwaggerModule.setup("swagger", app, () =>
-    SwaggerModule.createDocument(app, config),
-  );
+  SwaggerModule.setup("swagger", app, () => createOpenApiDocument(app));
 
   app.useGlobalPipes(
     new ValidationPipe({
