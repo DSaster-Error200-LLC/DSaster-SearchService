@@ -10,7 +10,7 @@
     "build": "nest build",
     "lint": "eslint .",
     "format:check": "prettier --check .",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write **/*.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
