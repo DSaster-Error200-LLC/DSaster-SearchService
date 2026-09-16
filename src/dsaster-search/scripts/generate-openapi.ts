@@ -11,7 +11,8 @@ const app = await NestFactory.create(AppModule);
 try {
   const document = createOpenApiDocument(app);
   const outputDirectory = resolve("openapi");
-  const outputPath = resolve(outputDirectory, "openapi.json");
+  const fileName = process.argv[2] ?? "openapi.json";
+  const outputPath = resolve(outputDirectory, fileName);
 
   await mkdir(outputDirectory, { recursive: true });
   await writeFile(outputPath, `${JSON.stringify(document, null, 2)}\n`);
