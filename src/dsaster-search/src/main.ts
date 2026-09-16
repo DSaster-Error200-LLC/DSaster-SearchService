@@ -3,6 +3,10 @@ import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module.js";
 
+function hyperlink(url: string): string {
+  return `\x1b]8;;${url}\x07${url}\x1b]8;;\x07`;
+}
+
 async function bootstrap() {
   const logger = new Logger("bootstrap");
 
@@ -19,7 +23,9 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
 
   const url = await app.getUrl();
-  logger.log(`Listening on ${url}`);
-  logger.log(`Swagger available on ${url}/swagger`);
+  const swaggerUrl = `${url}/swagger`;
+
+  logger.log(`Listening on ${hyperlink(url)}`);
+  logger.log(`Swagger available on ${hyperlink(swaggerUrl)}`);
 }
 await bootstrap();
