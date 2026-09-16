@@ -1,0 +1,43 @@
+name: Api PR Validation
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'src/dsaster-search/**'
+      - ".github/workflows/api-pr.yml"
+      - ".github/actions/setup-api/**"
+  workflow_dispatch:
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'src/dsaster-search'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-api
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'src/dsaster-search'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-api
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
