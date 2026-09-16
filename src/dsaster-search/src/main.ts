@@ -1,6 +1,7 @@
-import { Logger } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+
 import { AppModule } from "./app.module.js";
 
 function hyperlink(url: string): string {
@@ -18,6 +19,15 @@ async function bootstrap() {
     .build();
   SwaggerModule.setup("swagger", app, () =>
     SwaggerModule.createDocument(app, config),
+  );
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+      transform: true,
+    }),
   );
 
   await app.listen(process.env.PORT ?? 3000);
