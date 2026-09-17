@@ -13,6 +13,7 @@ export class EventsController {
   @ApiQuery({
     name: "name",
     required: true,
+    type: String,
   })
   @ApiOkResponse({ type: Event, isArray: true })
   find(@Query() query: FindEventsQuery): Event[] {
