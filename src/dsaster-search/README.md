@@ -12,15 +12,11 @@ pnpm install
 pnpm dev
 ```
 
-## Run tests
+## Run before commit
 
 ```bash
-# unit tests
-$ pnpm test
-
-# e2e tests
-$ pnpm test:e2e
-
-# test coverage
-$ pnpm test:cov
+pnpm lint
+pnpm format
+pnpm test
+pnpm api
 ```
