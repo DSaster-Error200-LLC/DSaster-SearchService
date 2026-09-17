@@ -9,7 +9,9 @@
             "name": "name",
             "required": true,
             "in": "query",
-            "schema": {}
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
