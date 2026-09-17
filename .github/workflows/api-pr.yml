@@ -41,3 +41,23 @@ jobs:
 
       - name: Test
         run: pnpm test
+    
+  openapi:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'src/dsaster-search'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-api
+
+      - name: Verify OpenAPI spec
+        run: |
+          pnpm api openapi.ci.json
+          if ! diff -u --strip-trailing-cr \
+            ./openapi/openapi.json \
+            ./openapi/openapi.ci.json; then
+            echo "::error file=openapi/openapi.json::OpenAPI spec is out of date. Regenerate and commit the updated file."
+            exit 1
+          fi
