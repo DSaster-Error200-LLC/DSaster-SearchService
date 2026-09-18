@@ -33,6 +33,54 @@
           "events"
         ]
       }
+    },
+    "/events/{eventId}": {
+      "post": {
+        "operationId": "EventsController_register",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid event id or body"
+          },
+          "409": {
+            "description": "Event id is already registered"
+          }
+        },
+        "summary": "Register an event so it appears in search results",
+        "tags": [
+          "events"
+        ]
+      }
     }
   },
   "info": {
@@ -50,17 +98,22 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "location": {
+            "type": "string"
           }
         },
         "required": [
-          "name"
+          "name",
+          "location"
         ]
       },
       "Event": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "name": {
             "type": "string"
@@ -78,6 +131,45 @@
         },
         "required": [
           "id",
+          "name",
+          "artist",
+          "date",
+          "venue"
+        ]
+      },
+      "RegisterVenueRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "location"
+        ]
+      },
+      "RegisterEventRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "artist": {
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "venue": {
+            "$ref": "#/components/schemas/RegisterVenueRequest"
+          }
+        },
+        "required": [
           "name",
           "artist",
           "date",
