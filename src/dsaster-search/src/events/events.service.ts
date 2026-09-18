@@ -1,15 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 
-import { IsNotEmpty, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDate, IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
 export class Venue {
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  location: string;
 }
 
 export class Event {
-  @ApiProperty()
+  @ApiProperty({ format: "uuid" })
   id: string;
 
   @ApiProperty()
@@ -25,6 +29,40 @@ export class Event {
   venue: Venue;
 }
 
+export class RegisterVenueRequest {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  location: string;
+}
+
+export class RegisterEventRequest {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  artist: string;
+
+  @ApiProperty()
+  @Type(() => Date)
+  @IsDate()
+  date: Date;
+
+  @ApiProperty({ type: RegisterVenueRequest })
+  @Type(() => RegisterVenueRequest)
+  @ValidateNested()
+  venue: RegisterVenueRequest;
+}
+
 export class FindEventsQuery {
   @IsString()
   @IsNotEmpty()
@@ -33,36 +71,18 @@ export class FindEventsQuery {
 
 @Injectable()
 export class EventsService {
-  // TODO: Remove the hardcoded events
-  private readonly events: Event[] = [
-    {
-      id: "1",
-      name: "Rock Concert",
-      artist: "The Example Band",
-      date: new Date("2026-10-10T20:00:00Z"),
-      venue: {
-        name: "Central Arena",
-      },
-    },
-    {
-      id: "2",
-      name: "Jazz Night",
-      artist: "Example Jazz",
-      date: new Date("2026-11-05T21:00:00Z"),
-      venue: {
-        name: "Blue Room",
-      },
-    },
-    {
-      id: "3",
-      name: "Pop Festival",
-      artist: "Pop Stars",
-      date: new Date("2026-12-15T18:00:00Z"),
-      venue: {
-        name: "Green Field",
-      },
-    },
-  ];
+  private readonly events = new Map<string, Event>();
+
+  register(id: string, request: RegisterEventRequest): Event {
+    if (this.events.has(id)) {
+      throw new ConflictException(`Event ${id} is already registered`);
+    }
+
+    const event: Event = { id, ...request };
+    this.events.set(id, event);
+
+    return event;
+  }
 
   find(query: FindEventsQuery): Event[] {
     const normalizedName = query.name.toUpperCase().trim();
@@ -70,7 +90,7 @@ export class EventsService {
       return [];
     }
 
-    return this.events.filter((event) =>
+    return [...this.events.values()].filter((event) =>
       event.name.toUpperCase().includes(normalizedName),
     );
   }
