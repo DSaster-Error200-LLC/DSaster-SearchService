@@ -1,9 +1,10 @@
 import type { Server } from "node:http";
-import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
 
 import { AppModule } from "@app/app.module.js";
+import { configureApp } from "@app/configuration.js";
 
 const id = "0b6f8f5e-6c1d-4a51-9a53-2f8f4f0d1c11";
 
@@ -24,14 +25,7 @@ describe("Events (e2e)", () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        forbidUnknownValues: true,
-        transform: true,
-      }),
-    );
+    configureApp(app);
     await app.init();
   });
 
