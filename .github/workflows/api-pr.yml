@@ -41,6 +41,9 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Test
+        run: pnpm test:e2e
     
   openapi:
     runs-on: ubuntu-latest
