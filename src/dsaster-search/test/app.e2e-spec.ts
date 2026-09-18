@@ -16,8 +16,8 @@ const body = {
 };
 
 describe("Events (e2e)", () => {
-  let app: INestApplication;
-  const http = () => request(app.getHttpServer() as Server);
+  let app: INestApplication<Server>;
+  const http = () => request(app.getHttpServer());
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
