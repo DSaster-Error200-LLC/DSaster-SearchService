@@ -1,9 +1,10 @@
-import { Logger, ValidationPipe } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { SwaggerModule } from "@nestjs/swagger";
 
 import { AppModule } from "./app.module.js";
 import { createOpenApiDocument } from "./openapi.js";
+import { configureApp } from "./configuration.js";
 
 function hyperlink(url: string): string {
   return `\x1b]8;;${url}\x07${url}\x1b]8;;\x07`;
@@ -18,14 +19,7 @@ async function bootstrap() {
 
   SwaggerModule.setup(swaggerPath, app, () => createOpenApiDocument(app));
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      forbidUnknownValues: true,
-      transform: true,
-    }),
-  );
+  configureApp(app);
 
   await app.listen(process.env.PORT ?? 3000);
 
