@@ -39,10 +39,10 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Test
+      - name: Unit tests
         run: pnpm test
 
-      - name: Test
+      - name: e2e tests
         run: pnpm test:e2e
     
   openapi:
