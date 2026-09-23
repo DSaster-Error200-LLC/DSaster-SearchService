@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 
 import { Type } from "class-transformer";
@@ -139,5 +139,13 @@ export class EventsService {
     return [...this.events.values()]
       .filter((event) => event.name.toUpperCase().includes(normalizedName))
       .map(toPreview);
+  }
+
+  findOne(id: string): Event {
+    const event = this.events.get(id);
+    if (!event) {
+      throw new NotFoundException(`Event ${id} not found`);
+    }
+    return event;
   }
 }

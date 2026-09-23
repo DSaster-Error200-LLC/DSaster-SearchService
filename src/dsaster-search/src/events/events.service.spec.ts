@@ -1,4 +1,4 @@
-import { ConflictException } from "@nestjs/common";
+import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { EventsService, RegisterEventRequest } from "./events.service.js";
 
@@ -60,5 +60,15 @@ describe("EventsService", () => {
     service.register(id, request);
 
     expect(() => service.register(id, request)).toThrow(ConflictException);
+  });
+
+  it("returns an event by id", () => {
+    const registered = service.register(id, request);
+
+    expect(service.findOne(id)).toEqual(registered);
+  });
+
+  it("throws NotFoundException when event does not exist", () => {
+    expect(() => service.findOne(id)).toThrow(NotFoundException);
   });
 });
