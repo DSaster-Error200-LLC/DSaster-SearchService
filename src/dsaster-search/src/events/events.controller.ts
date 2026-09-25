@@ -12,6 +12,7 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -64,5 +65,14 @@ export class EventsController {
     @Body() body: RegisterEventRequest,
   ): Event {
     return this.eventsService.register(eventId, body);
+  }
+
+  @Get(":eventId")
+  @ApiOperation({ summary: "Get event details by ID" })
+  @ApiParam({ name: "eventId", type: String, format: "uuid" })
+  @ApiOkResponse({ type: Event })
+  @ApiNotFoundResponse({ description: "Event not found" })
+  getDetails(@Param("eventId", new ParseUUIDPipe()) eventId: string): Event {
+    return this.eventsService.getById(eventId);
   }
 }
