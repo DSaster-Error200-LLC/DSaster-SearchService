@@ -4,6 +4,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 
+DSaster-SearchService is the search backend of the DSaster ticketing system. It owns event discovery: it lets users search for events and returns the results.
+
 ## Stack
 
 * [NestJS](https://nestjs.com/)
