@@ -12,15 +12,16 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
-  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 
 import {
   Event,
+  EventPreview,
   EventsService,
   FindEventsQuery,
   RegisterEventRequest,
@@ -32,13 +33,22 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  @ApiQuery({
-    name: "name",
-    required: true,
-    type: String,
+  @ApiOperation({
+    summary: "Search registered events by name",
+    description:
+      "Returns a preview of every registered event whose name contains the given text, in registration order.",
   })
-  @ApiOkResponse({ type: Event, isArray: true })
-  find(@Query() query: FindEventsQuery): Event[] {
+  @ApiOkResponse({
+    type: EventPreview,
+    isArray: true,
+    description:
+      "Previews of the matching events. The list is empty when no event matches or when the name contains only spaces.",
+  })
+  @ApiBadRequestResponse({
+    description:
+      "The name is missing or empty, or the request contains query parameters other than name.",
+  })
+  find(@Query() query: FindEventsQuery): EventPreview[] {
     return this.eventsService.find(query);
   }
 
@@ -55,5 +65,14 @@ export class EventsController {
     @Body() body: RegisterEventRequest,
   ): Event {
     return this.eventsService.register(eventId, body);
+  }
+
+  @Get(":eventId")
+  @ApiOperation({ summary: "Get event details by ID" })
+  @ApiParam({ name: "eventId", type: String, format: "uuid" })
+  @ApiOkResponse({ type: Event })
+  @ApiNotFoundResponse({ description: "Event not found" })
+  getDetails(@Param("eventId", new ParseUUIDPipe()) eventId: string): Event {
+    return this.eventsService.getById(eventId);
   }
 }

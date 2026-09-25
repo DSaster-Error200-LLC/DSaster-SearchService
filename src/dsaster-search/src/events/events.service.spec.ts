@@ -1,4 +1,4 @@
-import { ConflictException } from "@nestjs/common";
+import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { EventsService, RegisterEventRequest } from "./events.service.js";
 
@@ -26,17 +26,49 @@ describe("EventsService", () => {
     expect(service.find({ name: "rock" })).toEqual([]);
   });
 
-  it("reflects registered events in search results", () => {
-    const event = service.register(id, request);
+  it("returns registered events from register", () => {
+    expect(service.register(id, request)).toEqual({ id, ...request });
+  });
 
-    expect(event).toEqual({ id, ...request });
-    expect(service.find({ name: " rock " })).toEqual([event]);
+  it("finds registered events as previews with only the venue name", () => {
+    service.register(id, request);
+
+    expect(service.find({ name: " rock " })).toEqual([
+      {
+        id,
+        name: request.name,
+        artist: request.artist,
+        date: request.date,
+        venueName: request.venue.name,
+      },
+    ]);
+  });
+
+  it("returns no previews when the name does not match", () => {
+    service.register(id, request);
+
     expect(service.find({ name: "jazz" })).toEqual([]);
+  });
+
+  it("returns no previews when the name is blank", () => {
+    service.register(id, request);
+
+    expect(service.find({ name: "   " })).toEqual([]);
   });
 
   it("rejects registering the same id twice", () => {
     service.register(id, request);
 
     expect(() => service.register(id, request)).toThrow(ConflictException);
+  });
+
+  it("returns an event by id", () => {
+    const registered = service.register(id, request);
+
+    expect(service.getById(id)).toEqual(registered);
+  });
+
+  it("throws NotFoundException when event does not exist", () => {
+    expect(() => service.getById(id)).toThrow(NotFoundException);
   });
 });

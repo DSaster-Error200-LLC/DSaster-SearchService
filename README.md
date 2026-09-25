@@ -8,7 +8,7 @@ DSaster-SearchService is the search backend of the DSaster ticketing system. It 
 
 ## Docs
 
-* [Development](./src/dsaster-search/README.md)
+- [Development](./src/dsaster-search/README.md)
 
 ## Branch Strategy
 
@@ -20,13 +20,13 @@ DSaster-SearchService is the search backend of the DSaster ticketing system. It 
 
 Where `n` is the issue number.
 
-* Feature: `feat/#n`
-* Task: `task/#n`
-* Bug: `fix/#n`
+- Feature: `feat/#n`
+- Task: `task/#n`
+- Bug: `fix/#n`
 
 Example:
 
-* `feat/#123`
+- `feat/#123`
 
 ### Completion
 
