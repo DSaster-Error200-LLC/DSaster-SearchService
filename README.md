@@ -4,15 +4,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 
-## Stack
-
-* [NestJS](https://nestjs.com/)
-* [TypeScript](https://www.typescriptlang.org/)
-* [Vitest](https://vitest.dev/)
+DSaster-SearchService is the search backend of the DSaster ticketing system. It owns event discovery: it lets users search for events and returns the results.
 
 ## Docs
 
-* [Development](./src/dsaster-search/README.md)
+- [Development](./src/dsaster-search/README.md)
 
 ## Branch Strategy
 
@@ -24,13 +20,13 @@
 
 Where `n` is the issue number.
 
-* Feature: `feat/#n`
-* Task: `task/#n`
-* Bug: `fix/#n`
+- Feature: `feat/#n`
+- Task: `task/#n`
+- Bug: `fix/#n`
 
 Example:
 
-* `feat/#123`
+- `feat/#123`
 
 ### Completion
 
