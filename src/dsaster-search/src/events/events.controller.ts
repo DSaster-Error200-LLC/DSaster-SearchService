@@ -72,7 +72,7 @@ export class EventsController {
   @ApiParam({ name: "eventId", type: String, format: "uuid" })
   @ApiOkResponse({ type: Event })
   @ApiNotFoundResponse({ description: "Event not found" })
-  findOne(@Param("eventId", new ParseUUIDPipe()) eventId: string): Event {
-    return this.eventsService.findOne(eventId);
+  getDetails(@Param("eventId", new ParseUUIDPipe()) eventId: string): Event {
+    return this.eventsService.getById(eventId);
   }
 }

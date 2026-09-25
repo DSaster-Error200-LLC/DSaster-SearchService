@@ -145,7 +145,7 @@ export class EventsService {
       .map(toPreview);
   }
 
-  findOne(id: string): Event {
+  getById(id: string): Event {
     const event = this.events.get(id);
     if (!event) {
       throw new NotFoundException(`Event ${id} not found`);
