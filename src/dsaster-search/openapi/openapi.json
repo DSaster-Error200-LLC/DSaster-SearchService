@@ -89,7 +89,7 @@
         ]
       },
       "get": {
-        "operationId": "EventsController_findOne",
+        "operationId": "EventsController_getDetails",
         "parameters": [
           {
             "name": "eventId",

@@ -65,10 +65,10 @@ describe("EventsService", () => {
   it("returns an event by id", () => {
     const registered = service.register(id, request);
 
-    expect(service.findOne(id)).toEqual(registered);
+    expect(service.getById(id)).toEqual(registered);
   });
 
   it("throws NotFoundException when event does not exist", () => {
-    expect(() => service.findOne(id)).toThrow(NotFoundException);
+    expect(() => service.getById(id)).toThrow(NotFoundException);
   });
 });
