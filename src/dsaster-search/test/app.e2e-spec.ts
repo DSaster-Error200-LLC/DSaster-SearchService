@@ -40,8 +40,42 @@ describe("Events (e2e)", () => {
     const res = await http().get("/events").query({ name: "rock" }).expect(200);
 
     expect(res.body).toEqual([
-      { id, ...body, date: "2026-10-10T20:00:00.000Z" },
+      {
+        id,
+        name: body.name,
+        artist: body.artist,
+        date: "2026-10-10T20:00:00.000Z",
+        venueName: body.venue.name,
+      },
     ]);
+  });
+
+  it("returns an empty list when the search name is blank", async () => {
+    await http().post(`/events/${id}`).send(body);
+    const res = await http().get("/events").query({ name: "   " });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+
+  it("rejects a search without a name", async () => {
+    const res = await http().get("/events");
+
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects a search with an empty name", async () => {
+    const res = await http().get("/events").query({ name: "" });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects a search with unknown query parameters", async () => {
+    const res = await http()
+      .get("/events")
+      .query({ name: "rock", artist: "The Example Band" });
+
+    expect(res.status).toBe(400);
   });
 
   it("rejects an id that is not a guid", async () => {
