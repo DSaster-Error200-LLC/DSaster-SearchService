@@ -6,12 +6,6 @@
 
 DSaster-SearchService is the search backend of the DSaster ticketing system. It owns event discovery: it lets users search for events and returns the results.
 
-## Stack
-
-* [NestJS](https://nestjs.com/)
-* [TypeScript](https://www.typescriptlang.org/)
-* [Vitest](https://vitest.dev/)
-
 ## Docs
 
 * [Development](./src/dsaster-search/README.md)
