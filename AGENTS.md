@@ -15,13 +15,49 @@ src/dsaster-search/
 │   ├── app.module.ts         # Root module
 │   ├── configuration.ts      # configureApp: global ValidationPipe
 │   ├── openapi.ts            # OpenAPI document builder
-│   └── events/               # Events module (controller, service, module, specs)
+│   └── events/               # Events feature module, split into layers (see Architecture)
+│       ├── domain/           # Event, Venue and domain errors
+│       ├── application/      # Use cases, EventRepository port, output models
+│       ├── infrastructure/   # EventRepository implementations
+│       ├── presentation/     # Controller, request/response DTOs, error filter
+│       └── events.module.ts  # Wires the layers together
 ├── scripts/generate-openapi.ts
 ├── openapi/openapi.json      # Generated spec, committed to git
 └── test/                     # e2e tests (*.e2e-spec.ts)
 ```
 
-Current state: events are kept in an in-memory store (they are lost on restart), and `POST /events/{eventId}` registers them so they show up in search results.
+Current state: events are kept in `InMemoryEventRepository` (they are lost on restart), and `POST /events/{eventId}` registers them so they show up in search results.
+
+## Architecture
+
+Feature modules follow Clean Architecture. The dependency rule is: **source code dependencies only point inwards**.
+
+```text
+presentation ──▶ application ──▶ domain
+infrastructure ──▶ application + domain
+```
+
+| Layer | Contains | May depend on |
+|---|---|---|
+| `domain/` | Entities as plain types, domain errors | Nothing |
+| `application/` | Use cases, repository ports (abstract classes), output models such as `EventPreview` and `EventDetails` | `domain/` |
+| `infrastructure/` | Port implementations such as `InMemoryEventRepository` | `application/`, `domain/`, frameworks |
+| `presentation/` | Controllers, request and response DTOs, exception filters | `application/`, `domain/`, frameworks |
+
+Rules:
+
+* **`domain/` and `application/` are framework-free.** No `@nestjs/*`, `class-validator` or `class-transformer` imports, and no `@Injectable()` on use cases. ESLint enforces this and the dependency rule; spec files are exempt.
+* **Use cases are plain classes** with an `execute` method, registered in the module with `useFactory` and `inject`.
+* **Entities do not cross the boundary.** Use cases return output models (`EventPreview`, `EventDetails`), never domain entities. Response DTOs `implements` those models so the compiler checks they match.
+* **Ports are abstract classes**, because TypeScript interfaces cannot be DI tokens. Bind them in the module with `{ provide: Port, useClass: Adapter }`.
+* **Errors:** use cases throw domain errors (`domain/errors.ts`), never HTTP exceptions. `presentation/domain-errors.filter.ts` maps them to HTTP responses (for example, already registered to 409 and not found to 404).
+* **OpenAPI schema names:** response DTOs set `@ApiSchema({ name })` so the spec uses the model name (`Event`, `EventPreview`) instead of the class name.
+
+Common changes:
+
+* **New use case:** add `application/<name>.use-case.ts` and its spec, register it with `useFactory` in the module, and call it from the controller.
+* **New storage:** implement the port in `infrastructure/` and change the `useClass` binding in the module. Use cases and domain do not change.
+* **New domain error:** add it to `domain/errors.ts`, then map it in the error filter and its `@Catch(...)` list.
 
 ## Requirements
 
@@ -49,12 +85,12 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 ## Conventions
 
 * **Modules:** ESM only (`"type": "module"`). Relative imports end in `.js`.
-* **Imports:** use the `@app/*` alias (maps to `src/*`) instead of backwards relative imports such as `../`. ESLint rejects them.
+* **Imports:** use `./` for files in the same folder and the `@app/*` alias (maps to `src/*`) for anything else, such as imports between layers. ESLint rejects backwards relative imports such as `../`.
 * **Formatting:** Prettier with double quotes.
-* **Validation:** request DTOs use `class-validator`. The global `ValidationPipe` is created in `configureApp` (`src/configuration.ts`) and rejects unknown properties. Tests that boot the app must call `configureApp` too.
+* **Validation:** request DTOs live in `presentation/dto/` and use `class-validator`. The global `ValidationPipe` is created in `configureApp` (`src/configuration.ts`) and rejects unknown properties. Tests that boot the app must call `configureApp` too.
 * **API documentation:** annotate every controller method and DTO with `@nestjs/swagger` decorators (operation, parameters, responses and the conditions that produce them).
 * **OpenAPI spec:** `openapi/openapi.json` is generated. Any change to the API requires running `pnpm api` and committing the result. The CI fails if it is out of date.
-* **Tests:** unit tests sit next to the code as `*.spec.ts`. End-to-end tests go in `test/` as `*.e2e-spec.ts`. Vitest globals are enabled.
+* **Tests:** unit tests sit next to the code as `*.spec.ts`. End-to-end tests go in `test/` as `*.e2e-spec.ts`. Vitest globals are enabled. Use case tests run against the real `InMemoryEventRepository` instead of mocks. Controller tests import the feature module so they also check the wiring.
 
 ## Git workflow
 
