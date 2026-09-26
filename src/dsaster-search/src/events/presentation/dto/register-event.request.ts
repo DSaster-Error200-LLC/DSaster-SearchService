@@ -3,17 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsDate, IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
-export class RegisterVenueRequest {
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  location: string;
-}
+import { RegisterVenueRequest } from "./register-venue.request.js";
 
 export class RegisterEventRequest {
   @ApiProperty()

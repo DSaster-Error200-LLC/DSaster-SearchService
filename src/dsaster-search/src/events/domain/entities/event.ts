@@ -1,7 +1,4 @@
-export interface Venue {
-  readonly name: string;
-  readonly location: string;
-}
+import type { Venue } from "@app/events/domain/value-objects/venue.js";
 
 export interface Event {
   readonly id: string;

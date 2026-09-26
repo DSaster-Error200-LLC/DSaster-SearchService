@@ -1,9 +1,5 @@
 import type { Event } from "@app/events/domain/entities/event.js";
-
-export interface VenueDetails {
-  readonly name: string;
-  readonly location: string;
-}
+import { toVenueDetails, VenueDetails } from "./venue-details.js";
 
 export interface EventDetails {
   readonly id: string;
@@ -19,9 +15,6 @@ export function toEventDetails(event: Event): EventDetails {
     name: event.name,
     artist: event.artist,
     date: event.date,
-    venue: {
-      name: event.venue.name,
-      location: event.venue.location,
-    },
+    venue: toVenueDetails(event.venue),
   };
 }

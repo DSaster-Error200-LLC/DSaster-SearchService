@@ -4,18 +4,8 @@ import {
   EventDetails,
   toEventDetails,
 } from "@app/events/application/models/event-details.js";
+import type { RegisterEventCommand } from "@app/events/application/models/register-event-command.js";
 import { EventRepository } from "@app/events/application/ports/event.repository.js";
-
-export interface RegisterEventCommand {
-  readonly id: string;
-  readonly name: string;
-  readonly artist: string;
-  readonly date: Date;
-  readonly venue: {
-    readonly name: string;
-    readonly location: string;
-  };
-}
 
 export class RegisterEventUseCase {
   constructor(private readonly events: EventRepository) {}

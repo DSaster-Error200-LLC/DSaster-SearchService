@@ -1,18 +1,7 @@
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
-import type {
-  EventDetails,
-  VenueDetails,
-} from "@app/events/application/models/event-details.js";
-
-@ApiSchema({ name: "Venue" })
-export class VenueResponse implements VenueDetails {
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  location: string;
-}
+import type { EventDetails } from "@app/events/application/models/event-details.js";
+import { VenueResponse } from "./venue.response.js";
 
 @ApiSchema({ name: "Event" })
 export class EventResponse implements EventDetails {
