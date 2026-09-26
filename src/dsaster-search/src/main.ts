@@ -3,8 +3,8 @@ import { NestFactory } from "@nestjs/core";
 import { SwaggerModule } from "@nestjs/swagger";
 
 import { AppModule } from "./app.module.js";
-import { createOpenApiDocument } from "./openapi.js";
-import { configureApp } from "./configuration.js";
+import { createOpenApiDocument } from "./config/openapi.js";
+import { configureApp } from "./config/configuration.js";
 
 function hyperlink(url: string): string {
   return `\x1b]8;;${url}\x07${url}\x1b]8;;\x07`;

@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "@app/app.module.js";
-import { createOpenApiDocument } from "@app/openapi.js";
+import { createOpenApiDocument } from "@app/config/openapi.js";
 
 const app = await NestFactory.create(AppModule);
 
