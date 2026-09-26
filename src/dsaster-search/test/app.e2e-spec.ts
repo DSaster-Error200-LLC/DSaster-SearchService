@@ -97,5 +97,39 @@ describe("Events (e2e)", () => {
     const res = await http().post(`/events/${id}`).send(body);
 
     expect(res.status).toBe(409);
+    expect(res.body).toEqual({
+      statusCode: 409,
+      error: "Conflict",
+      message: `Event ${id} is already registered`,
+    });
+  });
+
+  it("returns the full event by id", async () => {
+    await http().post(`/events/${id}`).send(body);
+    const res = await http().get(`/events/${id}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      id,
+      ...body,
+      date: "2026-10-10T20:00:00.000Z",
+    });
+  });
+
+  it("returns 404 when the event does not exist", async () => {
+    const res = await http().get(`/events/${id}`);
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({
+      statusCode: 404,
+      error: "Not Found",
+      message: `Event ${id} not found`,
+    });
+  });
+
+  it("rejects getting an event with an id that is not a guid", async () => {
+    const res = await http().get("/events/not-a-guid");
+
+    expect(res.status).toBe(400);
   });
 });
