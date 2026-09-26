@@ -17,7 +17,10 @@ src/dsaster-search/
 │   ├── openapi.ts            # OpenAPI document builder
 │   └── events/               # Events feature module, split into layers (see Architecture)
 │       ├── domain/           # Event, Venue and domain errors
-│       ├── application/      # Use cases, EventRepository port, output models
+│       ├── application/
+│       │   ├── ports/        # Repository ports (EventRepository)
+│       │   ├── models/       # Output models (EventPreview, EventDetails)
+│       │   └── use-cases/    # Use cases and their specs
 │       ├── infrastructure/   # EventRepository implementations
 │       ├── presentation/     # Controller, request/response DTOs, error filter
 │       └── events.module.ts  # Wires the layers together
@@ -40,7 +43,7 @@ infrastructure ──▶ application + domain
 | Layer | Contains | May depend on |
 |---|---|---|
 | `domain/` | Entities as plain types, domain errors | Nothing |
-| `application/` | Use cases, repository ports (abstract classes), output models such as `EventPreview` and `EventDetails` | `domain/` |
+| `application/` | Use cases in `use-cases/`, repository ports (abstract classes) in `ports/`, output models such as `EventPreview` and `EventDetails` in `models/` | `domain/` |
 | `infrastructure/` | Port implementations such as `InMemoryEventRepository` | `application/`, `domain/`, frameworks |
 | `presentation/` | Controllers, request and response DTOs, exception filters | `application/`, `domain/`, frameworks |
 
@@ -55,8 +58,8 @@ Rules:
 
 Common changes:
 
-* **New use case:** add `application/<name>.use-case.ts` and its spec, register it with `useFactory` in the module, and call it from the controller.
-* **New storage:** implement the port in `infrastructure/` and change the `useClass` binding in the module. Use cases and domain do not change.
+* **New use case:** add `application/use-cases/<name>.use-case.ts` and its spec, register it with `useFactory` in the module, and call it from the controller.
+* **New storage:** implement the port from `application/ports/` in `infrastructure/` and change the `useClass` binding in the module. Use cases and domain do not change.
 * **New domain error:** add it to `domain/errors.ts`, then map it in the error filter and its `@Catch(...)` list.
 
 ## Requirements

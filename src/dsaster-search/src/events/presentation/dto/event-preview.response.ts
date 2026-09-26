@@ -1,6 +1,6 @@
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
-import type { EventPreview } from "@app/events/application/event-preview.js";
+import type { EventPreview } from "@app/events/application/models/event-preview.js";
 
 @ApiSchema({ name: "EventPreview" })
 export class EventPreviewResponse implements EventPreview {

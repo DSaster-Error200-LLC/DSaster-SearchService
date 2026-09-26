@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
-import { EventRepository } from "./application/event.repository.js";
-import { GetEventUseCase } from "./application/get-event.use-case.js";
-import { RegisterEventUseCase } from "./application/register-event.use-case.js";
-import { SearchEventsUseCase } from "./application/search-events.use-case.js";
+import { EventRepository } from "./application/ports/event.repository.js";
+import { GetEventUseCase } from "./application/use-cases/get-event.use-case.js";
+import { RegisterEventUseCase } from "./application/use-cases/register-event.use-case.js";
+import { SearchEventsUseCase } from "./application/use-cases/search-events.use-case.js";
 import { InMemoryEventRepository } from "./infrastructure/in-memory-event.repository.js";
 import { EventsController } from "./presentation/events.controller.js";
 

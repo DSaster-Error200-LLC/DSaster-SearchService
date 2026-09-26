@@ -1,4 +1,4 @@
-import { EventRepository } from "@app/events/application/event.repository.js";
+import { EventRepository } from "@app/events/application/ports/event.repository.js";
 import type { Event } from "@app/events/domain/event.js";
 
 export class InMemoryEventRepository implements EventRepository {

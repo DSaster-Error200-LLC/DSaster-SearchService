@@ -1,7 +1,10 @@
 import { EventAlreadyExistsError } from "@app/events/domain/errors.js";
 import type { Event } from "@app/events/domain/event.js";
-import { EventDetails, toEventDetails } from "./event-details.js";
-import { EventRepository } from "./event.repository.js";
+import {
+  EventDetails,
+  toEventDetails,
+} from "@app/events/application/models/event-details.js";
+import { EventRepository } from "@app/events/application/ports/event.repository.js";
 
 export interface RegisterEventCommand {
   readonly id: string;

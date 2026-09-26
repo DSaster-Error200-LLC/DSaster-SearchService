@@ -20,9 +20,9 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 
-import { GetEventUseCase } from "@app/events/application/get-event.use-case.js";
-import { RegisterEventUseCase } from "@app/events/application/register-event.use-case.js";
-import { SearchEventsUseCase } from "@app/events/application/search-events.use-case.js";
+import { GetEventUseCase } from "@app/events/application/use-cases/get-event.use-case.js";
+import { RegisterEventUseCase } from "@app/events/application/use-cases/register-event.use-case.js";
+import { SearchEventsUseCase } from "@app/events/application/use-cases/search-events.use-case.js";
 import { DomainErrorsFilter } from "./domain-errors.filter.js";
 import { EventPreviewResponse } from "./dto/event-preview.response.js";
 import { EventResponse } from "./dto/event.response.js";
