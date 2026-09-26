@@ -1,13 +1,5 @@
-import type { Event } from "@app/events/domain/entities/event.js";
+import { event } from "@test/fixtures/event.fixtures.js";
 import { InMemoryEventRepository } from "./in-memory-event.repository.js";
-
-const event: Event = {
-  id: "0b6f8f5e-6c1d-4a51-9a53-2f8f4f0d1c11",
-  name: "Rock Concert",
-  artist: "The Example Band",
-  date: new Date("2026-10-10T20:00:00Z"),
-  venue: { name: "Central Arena", location: "Madrid" },
-};
 
 describe("InMemoryEventRepository", () => {
   let repository: InMemoryEventRepository;
