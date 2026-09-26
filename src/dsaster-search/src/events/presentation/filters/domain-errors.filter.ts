@@ -7,10 +7,8 @@ import {
 } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 
-import {
-  EventAlreadyExistsError,
-  EventNotFoundError,
-} from "@app/events/domain/errors.js";
+import { EventAlreadyExistsError } from "@app/events/domain/errors/event-already-exists.error.js";
+import { EventNotFoundError } from "@app/events/domain/errors/event-not-found.error.js";
 
 type DomainError = EventAlreadyExistsError | EventNotFoundError;
 

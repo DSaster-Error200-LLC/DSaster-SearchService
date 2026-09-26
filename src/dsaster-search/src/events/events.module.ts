@@ -5,7 +5,7 @@ import { GetEventUseCase } from "./application/use-cases/get-event.use-case.js";
 import { RegisterEventUseCase } from "./application/use-cases/register-event.use-case.js";
 import { SearchEventsUseCase } from "./application/use-cases/search-events.use-case.js";
 import { InMemoryEventRepository } from "./infrastructure/in-memory-event.repository.js";
-import { EventsController } from "./presentation/events.controller.js";
+import { EventsController } from "./presentation/controllers/events.controller.js";
 
 @Module({
   controllers: [EventsController],

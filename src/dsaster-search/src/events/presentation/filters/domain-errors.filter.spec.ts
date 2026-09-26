@@ -1,9 +1,7 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 
-import {
-  EventAlreadyExistsError,
-  EventNotFoundError,
-} from "@app/events/domain/errors.js";
+import { EventAlreadyExistsError } from "@app/events/domain/errors/event-already-exists.error.js";
+import { EventNotFoundError } from "@app/events/domain/errors/event-not-found.error.js";
 import { toHttpException } from "./domain-errors.filter.js";
 
 const id = "0b6f8f5e-6c1d-4a51-9a53-2f8f4f0d1c11";

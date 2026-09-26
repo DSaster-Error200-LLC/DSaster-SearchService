@@ -1,4 +1,4 @@
-import { EventAlreadyExistsError } from "@app/events/domain/errors.js";
+import { EventAlreadyExistsError } from "@app/events/domain/errors/event-already-exists.error.js";
 import { InMemoryEventRepository } from "@app/events/infrastructure/in-memory-event.repository.js";
 import {
   RegisterEventCommand,

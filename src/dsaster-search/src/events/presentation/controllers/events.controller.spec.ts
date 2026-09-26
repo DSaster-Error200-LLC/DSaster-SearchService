@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 
 import { EventsModule } from "@app/events/events.module.js";
-import { RegisterEventRequest } from "./dto/register-event.request.js";
+import { RegisterEventRequest } from "@app/events/presentation/dto/register-event.request.js";
 import { EventsController } from "./events.controller.js";
 
 const id = "0b6f8f5e-6c1d-4a51-9a53-2f8f4f0d1c11";

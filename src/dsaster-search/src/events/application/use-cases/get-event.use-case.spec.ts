@@ -1,4 +1,4 @@
-import { EventNotFoundError } from "@app/events/domain/errors.js";
+import { EventNotFoundError } from "@app/events/domain/errors/event-not-found.error.js";
 import { InMemoryEventRepository } from "@app/events/infrastructure/in-memory-event.repository.js";
 import { GetEventUseCase } from "./get-event.use-case.js";
 

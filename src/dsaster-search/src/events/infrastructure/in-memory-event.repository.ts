@@ -1,5 +1,5 @@
 import { EventRepository } from "@app/events/application/ports/event.repository.js";
-import type { Event } from "@app/events/domain/event.js";
+import type { Event } from "@app/events/domain/entities/event.js";
 
 export class InMemoryEventRepository implements EventRepository {
   private readonly events = new Map<string, Event>();

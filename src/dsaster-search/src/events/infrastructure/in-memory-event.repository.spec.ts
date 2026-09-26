@@ -1,4 +1,4 @@
-import type { Event } from "@app/events/domain/event.js";
+import type { Event } from "@app/events/domain/entities/event.js";
 import { InMemoryEventRepository } from "./in-memory-event.repository.js";
 
 const event: Event = {

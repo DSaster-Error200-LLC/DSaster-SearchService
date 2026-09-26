@@ -1,4 +1,4 @@
-import type { Event } from "@app/events/domain/event.js";
+import type { Event } from "@app/events/domain/entities/event.js";
 
 export abstract class EventRepository {
   abstract save(event: Event): Promise<void>;

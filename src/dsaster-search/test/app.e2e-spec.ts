@@ -4,7 +4,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import request from "supertest";
 
 import { AppModule } from "@app/app.module.js";
-import { configureApp } from "@app/configuration.js";
+import { configureApp } from "@app/config/configuration.js";
 
 const id = "0b6f8f5e-6c1d-4a51-9a53-2f8f4f0d1c11";
 

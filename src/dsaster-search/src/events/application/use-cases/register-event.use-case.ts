@@ -1,5 +1,5 @@
-import { EventAlreadyExistsError } from "@app/events/domain/errors.js";
-import type { Event } from "@app/events/domain/event.js";
+import { EventAlreadyExistsError } from "@app/events/domain/errors/event-already-exists.error.js";
+import type { Event } from "@app/events/domain/entities/event.js";
 import {
   EventDetails,
   toEventDetails,
