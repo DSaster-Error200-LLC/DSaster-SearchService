@@ -7,6 +7,10 @@ on:
       - 'src/dsaster-search/**'
       - ".github/workflows/api-pr.yml"
       - ".github/actions/setup-api/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "commitlint.config.js"
+      - ".husky/**"
   workflow_dispatch:
 
 jobs:
