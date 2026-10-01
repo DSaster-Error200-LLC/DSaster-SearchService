@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   github-release:
-    needs: docker-image
     runs-on: ubuntu-latest
     defaults:
       run:
