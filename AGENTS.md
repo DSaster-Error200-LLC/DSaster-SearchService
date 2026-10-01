@@ -32,7 +32,7 @@ src/dsaster-search/
 │       │   └── dto/          # Request and response DTOs
 │       └── events.module.ts  # Wires the layers together
 ├── scripts/generate-openapi.ts
-├── openapi/openapi.json      # Generated spec, committed to git
+├── openapi.yml               # Generated OpenAPI spec (not committed)
 └── test/
     ├── events/               # e2e tests, one file per endpoint (*.e2e-spec.ts)
     ├── fixtures/             # Shared test data, used by unit and e2e tests
@@ -91,7 +91,7 @@ Run from `src/dsaster-search`:
 | `pnpm format:check` | Check formatting on the whole project |
 | `pnpm test` | Unit tests (`*.spec.ts`) |
 | `pnpm test:e2e` | End-to-end tests (`test/**/*.e2e-spec.ts`) |
-| `pnpm api` | Regenerate `openapi/openapi.json` |
+| `pnpm api` | Generate `openapi.yml` |
 
 Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm test:e2e` and `pnpm api`. The CI runs the same checks on every pull request.
 
@@ -103,7 +103,7 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 * **Formatting:** Prettier with double quotes.
 * **Validation:** request DTOs live in `presentation/dto/` and use `class-validator`. The global `ValidationPipe` is created in `configureApp` (`src/config/configuration.ts`) and rejects unknown properties. Tests that boot the app must call `configureApp` too; `createTestApp` (`test/utils/`) already does.
 * **API documentation:** annotate every controller method and DTO with `@nestjs/swagger` decorators (operation, parameters, responses and the conditions that produce them).
-* **OpenAPI spec:** `openapi/openapi.json` is generated. Any change to the API requires running `pnpm api` and committing the result. The CI fails if it is out of date.
+* **OpenAPI spec:** `pnpm api` generates `openapi.yml` for release; the generated file is not committed.
 * **Tests:** unit tests sit next to the code as `*.spec.ts`. End-to-end tests go in `test/<module>/`, one `*.e2e-spec.ts` file per endpoint, and boot the app with `createTestApp`. Vitest globals are enabled.
   * Reuse the shared data in `test/fixtures/` instead of redefining it in each test. Fixtures live outside `src/` so they never reach the build.
   * Use case tests run against the real `InMemoryEventRepository` instead of mocks. Controller tests import the feature module so they also check the wiring.
