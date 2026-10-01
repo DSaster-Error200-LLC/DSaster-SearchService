@@ -112,4 +112,5 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 
 * **Commits:** use [Conventional Commits](https://www.conventionalcommits.org/): `type(optional scope): description`. Types in use are `feat`, `fix`, `refactor`, `test`, `docs`, `ci` and `chore` (for example `feat: add event search endpoint`, `ci(api-pr): rename job`).
 * **Branches:** `feat/#n`, `task/#n` or `fix/#n`, where `n` is the issue number.
-* **Pull requests:** open them against `main`. The CI runs format and lint, build and tests (unit and e2e), and the OpenAPI spec check.
+* **Pull requests:** open them against `main`. The CI runs format and lint, build and tests (unit and e2e), and the OpenAPI spec check. It also runs on every push to `main`, which is what lets `scripts/bump.sh` release a commit.
+* **Releases:** a release is a `vM.m.p` tag on `main` (`v1.4.2`, never `v1.04.2`), created only with `scripts/bump.sh` (see the Releases section of the README). A pushed tag is a published release, so never move or reuse one. Run the script with `--dry-run` to preview the next version, and do not run it without that flag unless the user asks you to release.
