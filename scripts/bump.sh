@@ -40,7 +40,7 @@ Without a level it shows a menu; before pushing it asks for confirmation.
 
 Before anything is tagged it checks that you are on $RELEASE_BRANCH with no
 modified, staged or untracked files, level with $REMOTE/$RELEASE_BRANCH, that
-CI ($CI_WORKFLOW) passed for this commit, and that pnpm test passes.
+CI ($CI_WORKFLOW) passed for this commit, and that pnpm test and pnpm test:e2e pass.
 
 The base is the highest stable tag (vX.Y.Z); alpha and beta tags are ignored.
 With no tags yet it counts from v0.0.0.
@@ -62,11 +62,22 @@ check_ok() {
   echo "  ✓ $*"
 }
 
+# Runs one test script of the app; its output is shown only when it fails.
+run_tests() {
+  local label=$1 script=$2 output
+  echo "  … running pnpm $script"
+  if ! output=$(cd "$APP_DIR" && pnpm "$script" 2>&1); then
+    echo "$output" >&2
+    die "$label failed; nothing tagged"
+  fi
+  check_ok "$label pass"
+}
+
 # A pushed tag is a published release, so only tag reviewed, tested code.
 # Cheapest checks first; runs before the menu so nobody answers questions for
 # a release that can't happen.
 preflight() {
-  local branch sha ci status conclusion url output
+  local branch sha ci status conclusion url
   echo "Checking before release:"
 
   branch=$(git branch --show-current)
@@ -102,12 +113,8 @@ preflight() {
   command -v pnpm >/dev/null \
     || die "pnpm is needed to run the tests; run 'corepack enable' (the version comes from package.json)"
   [[ -d "$APP_DIR/node_modules" ]] || die "$APP_DIR/node_modules is missing; run 'pnpm install' in $APP_DIR first"
-  echo "  … running pnpm test"
-  if ! output=$(cd "$APP_DIR" && pnpm test 2>&1); then
-    echo "$output" >&2
-    die "tests failed; nothing tagged"
-  fi
-  check_ok "tests pass"
+  run_tests "unit tests" test
+  run_tests "e2e tests" test:e2e
   echo
 }
 
