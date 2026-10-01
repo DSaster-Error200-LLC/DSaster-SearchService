@@ -31,6 +31,8 @@ src/dsaster-search/
 │       │   ├── filters/      # Exception filters (domain errors to HTTP)
 │       │   └── dto/          # Request and response DTOs
 │       └── events.module.ts  # Wires the layers together
+├── Dockerfile                # Multi-stage image of the app
+├── .dockerignore             # Allowlist for the Docker build context
 ├── scripts/generate-openapi.ts
 ├── openapi/openapi.json      # Generated spec, committed to git
 └── test/
@@ -92,6 +94,8 @@ Run from `src/dsaster-search`:
 | `pnpm test` | Unit tests (`*.spec.ts`) |
 | `pnpm test:e2e` | End-to-end tests (`test/**/*.e2e-spec.ts`) |
 | `pnpm api` | Regenerate `openapi/openapi.json` |
+| `docker build -t dsaster-search .` | Build the production image |
+| `docker run --rm -p 3000:3000 dsaster-search` | Run the image (API and `/swagger` on port 3000) |
 
 Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm test:e2e` and `pnpm api`. The CI runs the same checks on every pull request.
 
@@ -104,6 +108,7 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 * **Validation:** request DTOs live in `presentation/dto/` and use `class-validator`. The global `ValidationPipe` is created in `configureApp` (`src/config/configuration.ts`) and rejects unknown properties. Tests that boot the app must call `configureApp` too; `createTestApp` (`test/utils/`) already does.
 * **API documentation:** annotate every controller method and DTO with `@nestjs/swagger` decorators (operation, parameters, responses and the conditions that produce them).
 * **OpenAPI spec:** `openapi/openapi.json` is generated. Any change to the API requires running `pnpm api` and committing the result. The CI fails if it is out of date.
+* **Docker:** `.dockerignore` is an allowlist (`*` followed by `!path` entries), so a new file that the build needs must be allowed there. The image installs with `--ignore-scripts` because `prepare` sets up Husky, and gets pnpm from `packageManager` through Corepack, so the version is not repeated in the `Dockerfile`.
 * **Tests:** unit tests sit next to the code as `*.spec.ts`. End-to-end tests go in `test/<module>/`, one `*.e2e-spec.ts` file per endpoint, and boot the app with `createTestApp`. Vitest globals are enabled.
   * Reuse the shared data in `test/fixtures/` instead of redefining it in each test. Fixtures live outside `src/` so they never reach the build.
   * Use case tests run against the real `InMemoryEventRepository` instead of mocks. Controller tests import the feature module so they also check the wiring.
