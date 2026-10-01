@@ -7,6 +7,9 @@ on:
       - 'src/dsaster-search/**'
       - ".github/workflows/api-pr.yml"
       - ".github/actions/setup-api/**"
+  # No paths filter: scripts/bump.sh needs a green run on every commit of main
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
