@@ -28,5 +28,6 @@ COPY --from=production-dependencies /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 USER node
 EXPOSE 3000
+HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 CMD wget -qO /dev/null "http://127.0.0.1:${PORT:-3000}/health" || exit 1
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "dist/main.js"]
