@@ -34,7 +34,7 @@ src/dsaster-search/
 ├── Dockerfile                # Multi-stage image of the app
 ├── .dockerignore             # Allowlist for the Docker build context
 ├── scripts/generate-openapi.ts
-├── openapi/openapi.json      # Generated spec, committed to git
+├── openapi.yml               # Generated OpenAPI spec (not committed)
 └── test/
     ├── events/               # e2e tests, one file per endpoint (*.e2e-spec.ts)
     ├── fixtures/             # Shared test data, used by unit and e2e tests
@@ -93,7 +93,7 @@ Run from `src/dsaster-search`:
 | `pnpm format:check` | Check formatting on the whole project |
 | `pnpm test` | Unit tests (`*.spec.ts`) |
 | `pnpm test:e2e` | End-to-end tests (`test/**/*.e2e-spec.ts`) |
-| `pnpm api` | Regenerate `openapi/openapi.json` |
+| `pnpm api` | Generate `openapi.yml` |
 | `docker build -t dsaster-search .` | Build the production image |
 | `docker run --rm -p 3000:3000 dsaster-search` | Run the image (API and `/swagger` on port 3000) |
 
@@ -107,7 +107,7 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 * **Formatting:** Prettier with double quotes.
 * **Validation:** request DTOs live in `presentation/dto/` and use `class-validator`. The global `ValidationPipe` is created in `configureApp` (`src/config/configuration.ts`) and rejects unknown properties. Tests that boot the app must call `configureApp` too; `createTestApp` (`test/utils/`) already does.
 * **API documentation:** annotate every controller method and DTO with `@nestjs/swagger` decorators (operation, parameters, responses and the conditions that produce them).
-* **OpenAPI spec:** `openapi/openapi.json` is generated. Any change to the API requires running `pnpm api` and committing the result. The CI fails if it is out of date.
+* **OpenAPI spec:** `pnpm api` generates `openapi.yml` for release; the generated file is not committed.
 * **Docker:** `.dockerignore` is an allowlist (`*` followed by `!path` entries), so a new file that the build needs must be allowed there. The image installs with `--ignore-scripts` because `prepare` sets up Husky, and gets pnpm from `packageManager` through Corepack, so the version is not repeated in the `Dockerfile`.
 * **Tests:** unit tests sit next to the code as `*.spec.ts`. End-to-end tests go in `test/<module>/`, one `*.e2e-spec.ts` file per endpoint, and boot the app with `createTestApp`. Vitest globals are enabled.
   * Reuse the shared data in `test/fixtures/` instead of redefining it in each test. Fixtures live outside `src/` so they never reach the build.
@@ -117,4 +117,5 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 
 * **Commits:** use [Conventional Commits](https://www.conventionalcommits.org/): `type(optional scope): description`. Types in use are `feat`, `fix`, `refactor`, `test`, `docs`, `ci` and `chore` (for example `feat: add event search endpoint`, `ci(api-pr): rename job`).
 * **Branches:** `feat/#n`, `task/#n` or `fix/#n`, where `n` is the issue number.
-* **Pull requests:** open them against `main`. The CI runs format and lint, build and tests (unit and e2e), and the OpenAPI spec check.
+* **Pull requests:** open them against `main`. The CI runs format and lint, build and tests (unit and e2e), and the OpenAPI spec check. It also runs on every push to `main`, which is what lets `scripts/bump.sh` release a commit.
+* **Releases:** a release is a `vM.m.p` tag on `main` (`v1.4.2`, never `v1.04.2`), created only with `scripts/bump.sh` (see the Releases section of `src/dsaster-search/README.md`). A pushed tag is a published release, so never move or reuse one. Run the script with `--dry-run` to preview the next version, and do not run it without that flag unless the user asks you to release.

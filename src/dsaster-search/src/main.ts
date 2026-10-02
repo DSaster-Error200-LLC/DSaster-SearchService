@@ -17,7 +17,10 @@ async function bootstrap() {
 
   const swaggerPath = "swagger";
 
-  SwaggerModule.setup(swaggerPath, app, () => createOpenApiDocument(app));
+  // TODO: Runtime version
+  SwaggerModule.setup(swaggerPath, app, () =>
+    createOpenApiDocument(app, "0.0.1"),
+  );
 
   configureApp(app);
 
