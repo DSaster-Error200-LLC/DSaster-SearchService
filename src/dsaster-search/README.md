@@ -12,6 +12,17 @@ pnpm install
 pnpm dev
 ```
 
+## Run with Docker
+
+```bash
+docker build -t dsaster-search .
+docker run --rm -p 3000:3000 dsaster-search
+```
+
+The API is served on `http://localhost:3000` and Swagger on `http://localhost:3000/swagger`.
+
+The image checks `GET /health` every 10 seconds, so `docker ps` shows the container as `healthy` once the app responds.
+
 ## Run before commit
 
 ```bash

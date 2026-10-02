@@ -1,0 +1,11 @@
+# Allowlist: only what the build needs enters the context
+*
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!.npmrc
+!nest-cli.json
+!tsconfig.json
+!tsconfig.build.json
+!src
+**/*.spec.ts
