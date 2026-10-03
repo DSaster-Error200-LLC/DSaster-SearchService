@@ -4,7 +4,28 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 
-DSaster-SearchService is the search backend of the DSaster ticketing system. It owns event discovery: it lets users search for events and returns the results.
+DSaster-SearchService is the search backend of the DSaster ticketing system.
+
+It owns event discovery: it lets users search for events and returns the results.
+
+## Getting started
+
+### Prerequisites
+
+- [Node.js (24.15.0+)](https://nodejs.org/en/download)
+- [pnpm (12+)](https://pnpm.io/installation)
+
+### Project setup
+
+```bash
+pnpm install
+```
+
+### Run the project
+
+```bash
+pnpm dev
+```
 
 ## Docs
 

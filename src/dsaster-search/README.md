@@ -29,7 +29,6 @@ The image checks `GET /health` every 10 seconds, so `docker ps` shows the contai
 pnpm lint
 pnpm format
 pnpm test
-pnpm api
 ```
 
 ## Releases
