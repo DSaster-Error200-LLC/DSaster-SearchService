@@ -29,6 +29,14 @@ pnpm install
 pnpm dev
 ```
 
+### Validate the project
+
+```bash
+pnpm lint
+pnpm format:check
+pnpm test
+```
+
 ## Docs
 
 - [Development](./src/dsaster-search/README.md)
