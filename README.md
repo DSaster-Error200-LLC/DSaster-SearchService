@@ -17,6 +17,8 @@ It owns event discovery: it lets users search for events and returns the results
 
 ### Project setup
 
+Run the following commands from: `src/dsaster-search`
+
 ```bash
 pnpm install
 ```
