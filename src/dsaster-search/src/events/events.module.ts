@@ -4,13 +4,13 @@ import { EventRepository } from "./application/ports/event.repository.js";
 import { GetEventUseCase } from "./application/use-cases/get-event.use-case.js";
 import { RegisterEventUseCase } from "./application/use-cases/register-event.use-case.js";
 import { SearchEventsUseCase } from "./application/use-cases/search-events.use-case.js";
-import { InMemoryEventRepository } from "./infrastructure/in-memory-event.repository.js";
+import { createEventRepository } from "./infrastructure/create-event-repository.js";
 import { EventsController } from "./presentation/controllers/events.controller.js";
 
 @Module({
   controllers: [EventsController],
   providers: [
-    { provide: EventRepository, useClass: InMemoryEventRepository },
+    { provide: EventRepository, useFactory: () => createEventRepository() },
     {
       provide: SearchEventsUseCase,
       useFactory: (events: EventRepository) => new SearchEventsUseCase(events),

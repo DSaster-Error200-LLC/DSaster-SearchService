@@ -43,7 +43,7 @@ export class EventsController {
   @ApiOperation({
     summary: "Search registered events by name",
     description:
-      "Returns a preview of every registered event whose name contains the given text, in registration order.",
+      "Returns a preview of every registered event whose name contains the given text, sorted by event date (earliest first).",
   })
   @ApiOkResponse({
     type: EventPreviewResponse,
