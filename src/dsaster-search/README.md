@@ -12,6 +12,18 @@ pnpm install
 pnpm dev
 ```
 
+## Storage
+
+Events are stored in Elasticsearch (9.5) when the `ELASTICSEARCH_URL` environment variable is set, for example `http://localhost:9200`. The app creates the `events` index on startup if it does not exist.
+
+Without `ELASTICSEARCH_URL`, events are kept in memory and are lost on restart.
+
+```bash
+ELASTICSEARCH_URL=http://localhost:9200 pnpm dev
+```
+
+With `ELASTICSEARCH_URL` set, `pnpm test` also runs the repository contract (`test/contracts/event-repository.contract.ts`) against that Elasticsearch, using a separate `events-contract-test` index.
+
 ## Run with Docker
 
 ```bash

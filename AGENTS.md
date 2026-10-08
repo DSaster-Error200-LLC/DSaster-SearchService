@@ -25,7 +25,7 @@ src/dsaster-search/
 │       │   ├── ports/        # Repository ports (EventRepository)
 │       │   ├── models/       # Use case input and output models
 │       │   └── use-cases/    # Use cases and their specs
-│       ├── infrastructure/   # EventRepository implementations
+│       ├── infrastructure/   # EventRepository implementations and createEventRepository
 │       ├── presentation/
 │       │   ├── controllers/  # Controllers and their specs
 │       │   ├── filters/      # Exception filters (domain errors to HTTP)
@@ -37,11 +37,12 @@ src/dsaster-search/
 ├── openapi.yml               # Generated OpenAPI spec (not committed)
 └── test/
     ├── events/               # e2e tests, one file per endpoint (*.e2e-spec.ts)
+    ├── contracts/            # Shared behavior every port implementation must pass
     ├── fixtures/             # Shared test data, used by unit and e2e tests
     └── utils/                # Test helpers such as createTestApp
 ```
 
-Current state: events are kept in `InMemoryEventRepository` (they are lost on restart), and `POST /events/{eventId}` registers them so they show up in search results.
+Current state: events are stored in Elasticsearch (`ElasticsearchEventRepository`) when `ELASTICSEARCH_URL` is set, and in `InMemoryEventRepository` otherwise (they are lost on restart). `createEventRepository` picks one at startup. `POST /events/{eventId}` registers events so they show up in search results.
 
 ## Architecture
 
@@ -56,7 +57,7 @@ infrastructure ──▶ application + domain
 |---|---|---|
 | `domain/` | Entities (types with an identity, such as `Event`) in `entities/`, value objects (types without identity, defined only by their values, such as `Venue`) in `value-objects/`, domain errors in `errors/` | Nothing |
 | `application/` | Use cases in `use-cases/`, repository ports (abstract classes) in `ports/`, use case input and output models such as `RegisterEventCommand` and `EventDetails` in `models/` | `domain/` |
-| `infrastructure/` | Port implementations such as `InMemoryEventRepository` | `application/`, `domain/`, frameworks |
+| `infrastructure/` | Port implementations such as `InMemoryEventRepository` and `ElasticsearchEventRepository` | `application/`, `domain/`, frameworks |
 | `presentation/` | Controllers in `controllers/`, exception filters in `filters/`, request and response DTOs in `dto/` | `application/`, `domain/`, frameworks |
 
 Rules:
@@ -71,7 +72,7 @@ Rules:
 Common changes:
 
 * **New use case:** add `application/use-cases/<name>.use-case.ts` and its spec, register it with `useFactory` in the module, call it from the controller, and add its e2e tests in `test/<module>/<name>.e2e-spec.ts`.
-* **New storage:** implement the port from `application/ports/` in `infrastructure/` and change the `useClass` binding in the module. Use cases and domain do not change.
+* **New storage:** implement the port from `application/ports/` in `infrastructure/` and select it in `createEventRepository` (`infrastructure/create-event-repository.ts`), which the module uses as the `EventRepository` factory. Use cases and domain do not change.
 * **New domain error:** add `domain/errors/<name>.error.ts`, then map it in the error filter and its `@Catch(...)` list.
 
 ## Requirements
@@ -113,6 +114,7 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 * **Tests:** unit tests sit next to the code as `*.spec.ts`. End-to-end tests go in `test/<module>/`, one `*.e2e-spec.ts` file per endpoint, and boot the app with `createTestApp`. Vitest globals are enabled.
   * Reuse the shared data in `test/fixtures/` instead of redefining it in each test. Fixtures live outside `src/` so they never reach the build.
   * Use case tests run against the real `InMemoryEventRepository` instead of mocks. Controller tests import the feature module so they also check the wiring.
+  * Every `EventRepository` implementation runs the shared contract in `test/contracts/event-repository.contract.ts` (`it.each(eventRepositoryContract)`). The Elasticsearch run is skipped unless `ELASTICSEARCH_URL` is set.
 
 ## Git workflow
 
