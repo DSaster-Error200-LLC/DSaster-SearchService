@@ -25,7 +25,7 @@ function responseError(type: string): errors.ResponseError {
   } as never);
 }
 
-const document = toEventDocument(event, new Date("2026-10-01T12:00:00Z"));
+const document = toEventDocument(event);
 
 describe("ElasticsearchEventRepository", () => {
   let client: ReturnType<typeof createFakeClient>;
@@ -125,7 +125,7 @@ describe("ElasticsearchEventRepository", () => {
         query: {
           wildcard: { name: { value: "*ROCK*", case_insensitive: true } },
         },
-        sort: [{ registeredAt: "asc" }, { id: "asc" }],
+        sort: [{ date: "asc" }, { id: "asc" }],
       }),
     );
   });

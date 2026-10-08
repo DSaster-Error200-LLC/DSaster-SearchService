@@ -2,12 +2,19 @@ import type { EventRepository } from "@app/events/application/ports/event.reposi
 import type { Event } from "@app/events/domain/entities/event.js";
 import { event } from "@test/fixtures/event.fixtures.js";
 
-// Saved before `event` in the ordering check; its id and name both sort after
-// `event`'s, so only registration order puts it first
-const laterNamedEvent: Event = {
+// Its id sorts before `event`'s, so only its later date puts it second
+const laterEvent: Event = {
+  ...event,
+  id: "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+  name: "Rock Night",
+  date: new Date("2026-12-01T21:00:00Z"),
+};
+
+// Same date as `event`; its id sorts after `event`'s
+const sameDateEvent: Event = {
   ...event,
   id: "f1c2d3e4-5a6b-4c7d-8e9f-0a1b2c3d4e5f",
-  name: "Rock Night",
+  name: "Rock Encore",
 };
 
 const eventWithWildcards: Event = {
@@ -58,14 +65,26 @@ export const eventRepositoryContract: {
     },
   },
   {
-    name: "returns matching events in the order they were saved",
+    name: "sorts matching events by date, earliest first",
     check: async (repository) => {
-      await repository.save(laterNamedEvent);
+      await repository.save(laterEvent);
       await repository.save(event);
 
       expect(await repository.searchByName("rock")).toEqual([
-        laterNamedEvent,
         event,
+        laterEvent,
+      ]);
+    },
+  },
+  {
+    name: "sorts events with the same date by id",
+    check: async (repository) => {
+      await repository.save(sameDateEvent);
+      await repository.save(event);
+
+      expect(await repository.searchByName("rock")).toEqual([
+        event,
+        sameDateEvent,
       ]);
     },
   },

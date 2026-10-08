@@ -24,7 +24,6 @@ const EVENT_MAPPINGS: estypes.MappingTypeMapping = {
         location: { type: "keyword" },
       },
     },
-    registeredAt: { type: "date" },
   },
 };
 
@@ -62,7 +61,7 @@ export class ElasticsearchEventRepository
     await this.client.index({
       index: this.index,
       id: event.id,
-      document: toEventDocument(event, new Date()),
+      document: toEventDocument(event),
       // A registered event must show up in the next search
       refresh: "wait_for",
     });
@@ -86,7 +85,7 @@ export class ElasticsearchEventRepository
           name: { value: `*${escapeWildcard(text)}*`, case_insensitive: true },
         },
       },
-      sort: [{ registeredAt: "asc" }, { id: "asc" }],
+      sort: [{ date: "asc" }, { id: "asc" }],
     });
 
     return result.hits.hits.flatMap((hit) =>

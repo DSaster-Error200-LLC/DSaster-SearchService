@@ -7,20 +7,15 @@ export interface EventDocument {
   artist: string;
   date: string;
   venue: VenueDocument;
-  registeredAt: string;
 }
 
-export function toEventDocument(
-  event: Event,
-  registeredAt: Date,
-): EventDocument {
+export function toEventDocument(event: Event): EventDocument {
   return {
     id: event.id,
     name: event.name,
     artist: event.artist,
     date: event.date.toISOString(),
     venue: { name: event.venue.name, location: event.venue.location },
-    registeredAt: registeredAt.toISOString(),
   };
 }
 
