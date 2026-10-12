@@ -25,7 +25,7 @@ async function bootstrap() {
   configureApp(app);
   app.enableShutdownHooks();
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 5201);
 
   const url = await app.getUrl();
   const swaggerUrl = `${url}/${swaggerPath}`;
