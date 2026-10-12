@@ -28,10 +28,10 @@ With `ELASTICSEARCH_URL` set, `pnpm test` also runs the repository contract (`te
 
 ```bash
 docker build -t dsaster-search .
-docker run --rm -p 3000:3000 dsaster-search
+docker run --rm -p 5201:5201 dsaster-search
 ```
 
-The API is served on `http://localhost:3000` and Swagger on `http://localhost:3000/swagger`.
+The API is served on `http://localhost:5201` and Swagger on `http://localhost:5201/swagger`.
 
 The image checks `GET /health` every 10 seconds, so `docker ps` shows the container as `healthy` once the app responds.
 
