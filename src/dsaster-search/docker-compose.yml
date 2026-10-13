@@ -33,7 +33,7 @@ services:
   dsaster-search:
     build: .
     ports:
-      - "3000:3000"
+      - "5201:5201"
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     depends_on:
