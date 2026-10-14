@@ -39,7 +39,7 @@ The image checks `GET /health` every 10 seconds, so `docker ps` shows the contai
 
 The `docker-compose.yml` defines three services: `elasticsearch`, `kibana` and `dsaster-search`.
 
-Everything at once (backend + Elasticsearch + Kibana):
+### Everything at once (backend + Elasticsearch + Kibana):
 
 ```bash
 docker compose up --build
@@ -50,13 +50,13 @@ docker compose up --build
 - Elasticsearch on `http://localhost:9200`
 - Kibana on `http://localhost:5601`
 
-Backend and Elasticsearch only (no Kibana):
+### Backend and Elasticsearch only (no Kibana):
 
 ```bash
 docker compose up elasticsearch dsaster-search --build
 ```
 
-Only Elasticsearch, then run the backend locally for development:
+### Only Elasticsearch, then run the backend locally for development:
 
 ```bash
 docker compose up elasticsearch
@@ -68,7 +68,7 @@ In another terminal:
 ELASTICSEARCH_URL=http://localhost:9200 pnpm dev
 ```
 
-To stop everything:
+### To stop everything:
 
 ```bash
 docker compose down
