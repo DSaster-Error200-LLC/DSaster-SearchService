@@ -35,6 +35,51 @@ The API is served on `http://localhost:5201` and Swagger on `http://localhost:52
 
 The image checks `GET /health` every 10 seconds, so `docker ps` shows the container as `healthy` once the app responds.
 
+## Run with Docker Compose
+
+The `docker-compose.yml` defines three services: `elasticsearch`, `kibana` and `dsaster-search`.
+
+### Everything at once (backend + Elasticsearch + Kibana):
+
+```bash
+docker compose up --build
+```
+
+- API on `http://localhost:5201`
+- Swagger on `http://localhost:5201/swagger`
+- Elasticsearch on `http://localhost:9200`
+- Kibana on `http://localhost:5601`
+
+### Backend and Elasticsearch only (no Kibana):
+
+```bash
+docker compose up elasticsearch dsaster-search --build
+```
+
+### Only Elasticsearch, then run the backend locally for development:
+
+```bash
+docker compose up elasticsearch
+```
+
+In another terminal:
+
+```bash
+ELASTICSEARCH_URL=http://localhost:9200 pnpm dev
+```
+
+### To stop everything:
+
+```bash
+docker compose down
+```
+
+Add `-v` to also remove the Elasticsearch data volume:
+
+```bash
+docker compose down -v
+```
+
 ## Run before commit
 
 ```bash
