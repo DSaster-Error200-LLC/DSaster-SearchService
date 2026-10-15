@@ -13,7 +13,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s",
+          "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' || exit 1",
         ]
       interval: 10s
       timeout: 5s
