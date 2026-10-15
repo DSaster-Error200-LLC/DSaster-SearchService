@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseUUIDPipe,
   Post,
   Query,
   UseFilters,
@@ -28,6 +27,7 @@ import { EventPreviewResponse } from "@app/events/presentation/dto/event-preview
 import { EventResponse } from "@app/events/presentation/dto/event.response.js";
 import { FindEventsQuery } from "@app/events/presentation/dto/find-events.query.js";
 import { RegisterEventRequest } from "@app/events/presentation/dto/register-event.request.js";
+import { ParseGuidPipe } from "@app/events/presentation/pipes/parse-guid.pipe.js";
 
 @Controller("events")
 @ApiTags("events")
@@ -68,7 +68,7 @@ export class EventsController {
   @ApiBadRequestResponse({ description: "Invalid event id or body" })
   @ApiConflictResponse({ description: "Event id is already registered" })
   register(
-    @Param("eventId", new ParseUUIDPipe()) eventId: string,
+    @Param("eventId", ParseGuidPipe) eventId: string,
     @Body() body: RegisterEventRequest,
   ): Promise<EventResponse> {
     return this.registerEvent.execute({ ...body, id: eventId });
@@ -80,7 +80,7 @@ export class EventsController {
   @ApiOkResponse({ type: EventResponse })
   @ApiNotFoundResponse({ description: "Event not found" })
   getDetails(
-    @Param("eventId", new ParseUUIDPipe()) eventId: string,
+    @Param("eventId", ParseGuidPipe) eventId: string,
   ): Promise<EventResponse> {
     return this.getEvent.execute(eventId);
   }
