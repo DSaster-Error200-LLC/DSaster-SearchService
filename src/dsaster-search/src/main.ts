@@ -3,6 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { SwaggerModule } from "@nestjs/swagger";
 
 import { AppModule } from "./app.module.js";
+import { getAppVersion } from "./config/app-version.js";
 import { createOpenApiDocument } from "./config/openapi.js";
 import { configureApp } from "./config/configuration.js";
 
@@ -11,15 +12,17 @@ function hyperlink(url: string): string {
 }
 
 async function bootstrap() {
+  // Fail before creating the app if the version is missing
+  const version = getAppVersion();
+
   const logger = new Logger("bootstrap");
 
   const app = await NestFactory.create(AppModule);
 
   const swaggerPath = "swagger";
 
-  // TODO: Runtime version
   SwaggerModule.setup(swaggerPath, app, () =>
-    createOpenApiDocument(app, "0.0.1"),
+    createOpenApiDocument(app, version),
   );
 
   configureApp(app);
@@ -30,6 +33,7 @@ async function bootstrap() {
   const url = await app.getUrl();
   const swaggerUrl = `${url}/${swaggerPath}`;
 
+  logger.log(`Version ${version}`);
   logger.log(`Listening on ${hyperlink(url)}`);
   logger.log(`Swagger available on ${hyperlink(swaggerUrl)}`);
 }
