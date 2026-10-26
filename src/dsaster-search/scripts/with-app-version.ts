@@ -1,8 +1,8 @@
-// Runs a command with APP_VERSION derived from the git tags:
-// `jiti scripts/with-app-version.ts nest start`
+// Runs a command with APP_VERSION derived from the git tags, for
+// `pnpm compose`: the dsaster-search image takes it as a build argument
 import { spawn } from "node:child_process";
 
-import { resolveAppVersion } from "./app-version.js";
+import { resolveGitVersion } from "@app/config/git-version.js";
 
 const command = process.argv.slice(2).join(" ");
 if (!command) {
@@ -10,11 +10,11 @@ if (!command) {
   process.exit(1);
 }
 
-// A shell resolves .cmd shims such as `nest` on Windows
+// A shell resolves .cmd shims on Windows
 const child = spawn(command, {
   shell: true,
   stdio: "inherit",
-  env: { ...process.env, APP_VERSION: resolveAppVersion() },
+  env: { ...process.env, APP_VERSION: resolveGitVersion() },
 });
 
 // Ctrl+C reaches the child too: wait for it to exit instead of exiting first

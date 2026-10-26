@@ -14,18 +14,20 @@ pnpm dev
 
 ## Version
 
-The app needs the `APP_VERSION` environment variable and refuses to start without it. It shows the version in Swagger and logs it at startup, just before `Listening on`.
+The app needs a version to start. It reads it from the `APP_VERSION` environment variable, which the Docker image sets from its build argument.
 
-`pnpm dev` and `pnpm start` set it from the git tags:
+Outside production, when `APP_VERSION` is not set, the app derives the version from the git tags:
 
 - On a commit tagged `vX.Y.Z`: `X.Y.Z`
 - N commits after the latest tag: `X.Y.Z-dev.N`
+
+In production (`NODE_ENV=production`, as in the Docker image) `APP_VERSION` is required.
 
 ```bash
 pnpm --silent app-version   # prints the version, for example 1.1.0-dev.4
 ```
 
-A clone without tags cannot derive it: run `git fetch --tags`.
+A clone without tags cannot derive it: run `git fetch --tags` or set `APP_VERSION`.
 
 ## Storage
 

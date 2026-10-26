@@ -12,7 +12,6 @@ function hyperlink(url: string): string {
 }
 
 async function bootstrap() {
-  // Fail before creating the app if the version is missing
   const version = getAppVersion();
 
   const logger = new Logger("bootstrap");
