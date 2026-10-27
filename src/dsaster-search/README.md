@@ -12,6 +12,23 @@ pnpm install
 pnpm dev
 ```
 
+## Version
+
+The app needs a version to start. It reads it from the `APP_VERSION` environment variable, which the Docker image sets from its build argument.
+
+Outside production, when `APP_VERSION` is not set, the app derives the version from the git tags:
+
+- On a commit tagged `vX.Y.Z`: `X.Y.Z`
+- N commits after the latest tag: `X.Y.Z-dev.N`
+
+In production (`NODE_ENV=production`, as in the Docker image) `APP_VERSION` is required.
+
+```bash
+pnpm --silent app-version   # prints the version, for example 1.1.0-dev.4
+```
+
+A clone without tags cannot derive it: run `git fetch --tags` or set `APP_VERSION`.
+
 ## Storage
 
 Events are stored in Elasticsearch (9.5) when the `ELASTICSEARCH_URL` environment variable is set, for example `http://localhost:9200`. The app creates the `events` index on startup if it does not exist.
@@ -27,9 +44,11 @@ With `ELASTICSEARCH_URL` set, `pnpm test` also runs the repository contract (`te
 ## Run with Docker
 
 ```bash
-docker build -t dsaster-search .
+docker build --build-arg APP_VERSION=$(pnpm --silent app-version) -t dsaster-search .
 docker run --rm -p 5201:5201 dsaster-search
 ```
+
+The `APP_VERSION` build argument sets the version inside the container, which does not start without it. The release pipeline passes the version of the tag it publishes.
 
 The API is served on `http://localhost:5201` and Swagger on `http://localhost:5201/swagger`.
 
@@ -39,10 +58,12 @@ The image checks `GET /health` every 10 seconds, so `docker ps` shows the contai
 
 The `docker-compose.yml` defines three services: `elasticsearch`, `kibana` and `dsaster-search`.
 
+`pnpm compose` runs `docker compose` with `APP_VERSION` set from the git tags, which the `dsaster-search` image needs to build. Plain `docker compose` works for the commands that do not build it.
+
 ### Everything at once (backend + Elasticsearch + Kibana):
 
 ```bash
-docker compose up --build
+pnpm compose up --build
 ```
 
 - API on `http://localhost:5201`
@@ -53,7 +74,7 @@ docker compose up --build
 ### Backend and Elasticsearch only (no Kibana):
 
 ```bash
-docker compose up elasticsearch dsaster-search --build
+pnpm compose up elasticsearch dsaster-search --build
 ```
 
 ### Only Elasticsearch, then run the backend locally for development:

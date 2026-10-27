@@ -20,7 +20,9 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 FROM ${NODE_IMAGE} AS runtime
-ENV NODE_ENV=production
+# The app refuses to start without it: pass --build-arg APP_VERSION=$(pnpm --silent app-version)
+ARG APP_VERSION
+ENV NODE_ENV=production APP_VERSION=$APP_VERSION
 RUN apk add --no-cache tini
 WORKDIR /app
 COPY package.json ./

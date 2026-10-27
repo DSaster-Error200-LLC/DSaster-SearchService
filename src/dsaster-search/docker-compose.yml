@@ -31,7 +31,11 @@ services:
         condition: service_healthy
 
   dsaster-search:
-    build: .
+    build:
+      context: .
+      args:
+        # `pnpm compose up --build` sets it from the git tags
+        APP_VERSION: ${APP_VERSION:-}
     ports:
       - "5201:5201"
     environment:

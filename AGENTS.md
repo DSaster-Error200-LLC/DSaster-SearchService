@@ -33,7 +33,7 @@ src/dsaster-search/
 │       └── events.module.ts  # Wires the layers together
 ├── Dockerfile                # Multi-stage image of the app
 ├── .dockerignore             # Allowlist for the Docker build context
-├── scripts/generate-openapi.ts
+├── scripts/                  # generate-openapi.ts, print-app-version.ts and with-app-version.ts (APP_VERSION for pnpm compose)
 ├── openapi.yml               # Generated OpenAPI spec (not committed)
 └── test/
     ├── events/               # e2e tests, one file per endpoint (*.e2e-spec.ts)
@@ -95,7 +95,9 @@ Run from `src/dsaster-search`:
 | `pnpm test` | Unit tests (`*.spec.ts`) |
 | `pnpm test:e2e` | End-to-end tests (`test/**/*.e2e-spec.ts`) |
 | `pnpm api` | Generate `openapi.yml` |
-| `docker build -t dsaster-search .` | Build the production image |
+| `pnpm --silent app-version` | Print the version derived from the git tags |
+| `pnpm compose <args>` | `docker compose` with `APP_VERSION` set, needed to build the `dsaster-search` service |
+| `docker build --build-arg APP_VERSION=$(pnpm --silent app-version) -t dsaster-search .` | Build the production image |
 | `docker run --rm -p 3000:3000 dsaster-search` | Run the image (API and `/swagger` on port 3000) |
 
 Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm test:e2e` and `pnpm api`. The CI runs the same checks on every pull request.
@@ -107,6 +109,7 @@ Before finishing a change, run `pnpm lint`, `pnpm format`, `pnpm test`, `pnpm te
 * **One type per file:** each exported interface, class or type lives in its own file named after it, including nested payload types such as `VenueResponse` or `RegisterVenueRequest`. A mapper function goes in the same file as the type it builds (for example `toEventDetails` in `event-details.ts`).
 * **Formatting:** Prettier with double quotes.
 * **Validation:** request DTOs live in `presentation/dto/` and use `class-validator`. The global `ValidationPipe` is created in `configureApp` (`src/config/configuration.ts`) and rejects unknown properties. Tests that boot the app must call `configureApp` too; `createTestApp` (`test/utils/`) already does.
+* **Version:** the app needs a version at startup (`src/config/app-version.ts`) and uses it as the Swagger version. It reads `APP_VERSION`; outside production, when it is not set, it derives the version from the git tags (`X.Y.Z`, or `X.Y.Z-dev.N` N commits after the latest tag, in `src/config/git-version.ts`). In production (`NODE_ENV=production`) `APP_VERSION` is required. The Docker image takes it as the `APP_VERSION` build argument: `pnpm compose` sets it from the git tags (`scripts/with-app-version.ts`), and the release pipeline passes the tag's version.
 * **Shutdown:** `main.ts` calls `app.enableShutdownHooks()`, so on SIGTERM the app finishes the requests in flight and runs the lifecycle hooks before exiting. Keep it out of `configureApp`: tests call that for every app they create, and each call would add signal listeners to the process.
 * **API documentation:** annotate every controller method and DTO with `@nestjs/swagger` decorators (operation, parameters, responses and the conditions that produce them).
 * **OpenAPI spec:** `pnpm api` generates `openapi.yml` for release; the generated file is not committed.

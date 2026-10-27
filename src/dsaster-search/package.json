@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "nest start --watch",
-    "dev:debug": "nest start -debug --watch",
+    "dev:debug": "nest start --debug --watch",
     "start": "nest start",
     "build": "nest build",
+    "app-version": "cross-env JITI_TSCONFIG_PATHS=tsconfig.json jiti scripts/print-app-version.ts",
+    "compose": "cross-env JITI_TSCONFIG_PATHS=tsconfig.json jiti scripts/with-app-version.ts docker compose",
     "api": "cross-env JITI_TSCONFIG_PATHS=tsconfig.json jiti scripts/generate-openapi.ts",
     "lint": "eslint .",
     "format:check": "prettier --check .",
