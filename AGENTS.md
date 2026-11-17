@@ -15,7 +15,8 @@ src/dsaster-search/
 │   ├── app.module.ts         # Root module
 │   ├── config/
 │   │   ├── configuration.ts  # configureApp: global ValidationPipe
-│   │   └── openapi.ts        # OpenAPI document builder
+│   │   ├── openapi.ts        # OpenAPI document builder
+│   │   └── seed-example-events.ts # Example events registered at startup outside production
 │   └── events/               # Events feature module, split into layers (see Architecture)
 │       ├── domain/
 │       │   ├── entities/     # Types with identity (Event)
@@ -43,6 +44,8 @@ src/dsaster-search/
 ```
 
 Current state: events are stored in Elasticsearch (`ElasticsearchEventRepository`) when `ELASTICSEARCH_URL` is set, and in `InMemoryEventRepository` otherwise (they are lost on restart). `createEventRepository` picks one at startup. `POST /events/{eventId}` registers events so they show up in search results.
+
+Unless `NODE_ENV` is `production`, `main.ts` registers the example event of BookingService at startup (`src/config/seed-example-events.ts`), after `app.init()` so the Elasticsearch index exists. The tests do not go through `main.ts`, so they start without it.
 
 ## Architecture
 

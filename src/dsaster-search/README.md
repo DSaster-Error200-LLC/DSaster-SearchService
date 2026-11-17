@@ -41,6 +41,12 @@ ELASTICSEARCH_URL=http://localhost:9200 pnpm dev
 
 With `ELASTICSEARCH_URL` set, `pnpm test` also runs the repository contract (`test/contracts/event-repository.contract.ts`) against that Elasticsearch, using a separate `events-contract-test` index.
 
+## Example data
+
+Unless `NODE_ENV` is `production`, the app registers the example event that BookingService seeds ("Rock Fest 2026", id `11111111-1111-1111-1111-111111111111`) at startup. An event that already exists, as in Elasticsearch after a restart, is left as it is.
+
+The Docker image runs with `NODE_ENV=production`, so it does not register it.
+
 ## Run with Docker
 
 ```bash
