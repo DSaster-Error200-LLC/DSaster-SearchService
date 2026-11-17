@@ -2,10 +2,13 @@ import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { SwaggerModule } from "@nestjs/swagger";
 
+import { RegisterEventUseCase } from "./events/application/use-cases/register-event.use-case.js";
+
 import { AppModule } from "./app.module.js";
 import { getAppVersion } from "./config/app-version.js";
 import { createOpenApiDocument } from "./config/openapi.js";
 import { configureApp } from "./config/configuration.js";
+import { seedExampleEvents } from "./config/seed-example-events.js";
 
 function hyperlink(url: string): string {
   return `\x1b]8;;${url}\x07${url}\x1b]8;;\x07`;
@@ -26,6 +29,11 @@ async function bootstrap() {
 
   configureApp(app);
   app.enableShutdownHooks();
+
+  // The lifecycle hooks, such as creating the Elasticsearch index, run before
+  // the example events are registered
+  await app.init();
+  await seedExampleEvents(app.get(RegisterEventUseCase));
 
   await app.listen(process.env.PORT ?? 5201);
 
